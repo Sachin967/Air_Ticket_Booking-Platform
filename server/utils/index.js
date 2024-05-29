@@ -12,13 +12,13 @@ export const GeneratePassword = async (password, salt) => {
 export const ValidatePassword = async (enteredPassword, salt, savedPassword) => {
      return (await GeneratePassword(enteredPassword, salt)) === savedPassword
 }
+
 export const GenerateSignature = async (res, payload) => {
      try {
           const token = await jwt.sign(payload, process.env.APP_SECRET, { expiresIn: '30d' })
-          // Set the JWT token as a cookie
           res.cookie('userJwt', token, {
                httpOnly: true,
-               secure: process.env.NODE_ENV !== 'dev',
+               secure: process.env.NODE_ENV === 'production',
                sameSite: 'Strict',
                maxAge: 30 * 24 * 60 * 60 * 1000,
           })
@@ -29,13 +29,14 @@ export const GenerateSignature = async (res, payload) => {
           return error
      }
 }
+
 export const GenerateSignatureAdmin = async (res, payload) => {
      try {
-          const token = await jwt.sign(payload, APP_SECRET, { expiresIn: '30d' })
-          // Set the JWT token as a cookie
+        
+          const token = await jwt.sign(payload, process.env.APP_SECRET, { expiresIn: '30d' })
           res.cookie('adminJwt', token, {
                httpOnly: true,
-               secure: false,
+               secure: process.env.NODE_ENV === 'production',
                sameSite: 'Strict',
                maxAge: 30 * 24 * 60 * 60 * 1000,
           })
@@ -46,15 +47,4 @@ export const GenerateSignatureAdmin = async (res, payload) => {
           return error
      }
 }
-export const ValidateSignature = async (req) => {
-     try {
-          console.log(req.cookies)
-          const accessToken = req.cookies.userJwt
-          const payload = await jwt.verify(accessToken, APP_SECRET)
-          req.user = payload
-          return true
-     } catch (error) {
-          console.log(error)
-          return false
-     }
-}
+

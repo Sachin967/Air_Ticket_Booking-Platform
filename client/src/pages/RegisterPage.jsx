@@ -1,14 +1,16 @@
 import { useState, useEffect, useReducer } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import { users } from '../axios'
+import { register } from '../api/auth'
+import { AuthActions } from '../store/Authslice'
 
 
-const SignUp = () => {
+const RegisterPage = () => {
   const [passwordVisible, setPasswordVisible] = useState(false)
   const userLoggedIn = useSelector((state) => state.auth.Userisloggedin)
   const Navigate = useNavigate()
+  const Dispatch = useDispatch()
 
   useEffect(() => {
     if (userLoggedIn) {
@@ -19,7 +21,7 @@ const SignUp = () => {
   const handleChange = (e) => {
     dispatch({
       type: 'handleinput',
-      field: e.target.name ,
+      field: e.target.name,
       payload: e.target.value,
     })
   }
@@ -71,21 +73,18 @@ const SignUp = () => {
 
   const handleSignup = async (e) => {
     e.preventDefault()
-    const isValid= validateForm()
+    const isValid = validateForm()
     if (isValid) {
       try {
-        const response = await users.post('/register', formstate, { withCredentials: true })
-        console.log(response.status)
-        if (response.status === 200) {
-          console.log(response)
-          toast.success('Email verification link has been send to your email')
+        const response = await register(formstate)
+        if (response) {
+          Dispatch(AuthActions.Userlogin(response))
+          Navigate('/')
         }
       } catch (err) {
         toast.error(err.message)
         console.log(err)
       }
-    } else {
-      toast.error('Not valid')
     }
   }
 
@@ -230,4 +229,4 @@ const SignUp = () => {
   )
 }
 
-export default SignUp
+export default RegisterPage

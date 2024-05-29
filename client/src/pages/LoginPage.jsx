@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { users } from '../axios'
 import { useDispatch, useSelector } from 'react-redux'
 import { AuthActions } from '../store/Authslice'
+import { login } from '../api/auth'
 
 const LoginPage = () => {
   const Navigate = useNavigate()
-  const userLoggedIn= useSelector((state) => state.auth.Userisloggedin)
+  const userLoggedIn= useSelector((state) => state.auth?.Userisloggedin)
   useEffect(() => {
     if (userLoggedIn) {
       Navigate('/')
@@ -44,10 +44,9 @@ const LoginPage = () => {
     const isValid = validateForm()
     if (isValid) {
       try {
-        const response = await users.post('/login', formState, { withCredentials: true })
-
-        if (response.data) {
-          Dispatch(AuthActions.Userlogin(response.data))
+        const response = await login(formState)
+        if (response) {
+          Dispatch(AuthActions.Userlogin(response))
           Navigate('/')
         } else {
           toast.error('Login failed. Please check your credentials.')

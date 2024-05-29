@@ -1,9 +1,20 @@
 import express from 'express'
-import { bookFlight, createFlight, searchFlightsByDestination, searchFlightsByName } from '../controllers/flightController.js'
+import {
+     bookFlight,
+     createFlight,
+     searchFlightsByDestination,
+     searchFlightsByName,
+} from '../controllers/flightController.js'
+import { validateSignatureAdmin, validateSignatureUser } from '../middleware/authenticate.js'
+
 const router = express.Router()
 
-router.get('/search', searchFlightsByDestination)
-router.get('/searchairline', searchFlightsByName)
-router.post('/book', bookFlight)
-router.post('/register-flight',createFlight)
+// Search flights routes
+router.get('/search', searchFlightsByDestination) 
+router.get('/search-airline', searchFlightsByName) 
+
+// Flight booking and creation routes
+router.post('/book', validateSignatureUser, bookFlight) 
+router.post('/create', validateSignatureAdmin, createFlight) 
+
 export default router
