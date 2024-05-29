@@ -15,6 +15,6 @@ router.get('/search-airline', searchFlightsByName)
 
 // Flight booking and creation routes
 router.post('/book', validateSignatureUser, bookFlight) 
-router.post('/create', validateSignatureAdmin, createFlight) 
+router.post('/register-flight', validateSignatureAdmin, createFlight) 
 
 export default router

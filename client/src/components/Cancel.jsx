@@ -4,12 +4,6 @@ import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 
 const Cancel = () => {
   const navigate = useNavigate();
-
-  const location = useLocation();
-
-  if (!location.state || !location.state.fromNavigation) {
-    return <Navigate to="/" />;
-  }
   const handleHome = () => {
     navigate('/');
   };

@@ -2,11 +2,7 @@ import React from 'react';
 import { Link, Navigate, useLocation } from 'react-router-dom';
 
 const Success = () => {
-  const location = useLocation();
 
-  if (!location.state || !location.state.fromNavigation) {
-    return <Navigate to="/" />;
-  }
   return (
     <div className="container mx-auto mt-8">
       <div className="bg-white p-8 rounded-lg shadow-md">
